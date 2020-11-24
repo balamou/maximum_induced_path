@@ -43,7 +43,7 @@ def draw(edges, induced_path = []):
     G.add_edges_from(edges)
 
     # Need to create a layout when doing
-    pos = nx.spring_layout(G)
+    pos = nx.planar_layout(G)
     nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 500)
     nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 500, node_color="red")
     nx.draw_networkx_labels(G, pos)
@@ -53,7 +53,7 @@ def draw(edges, induced_path = []):
 def main():
     total_nodes = 6
     p = 0.5 # probability of edge creation
-    graph = erdos_renyi_graph(total_nodes, p)
+    graph = erdos_renyi_graph(total_nodes, p, 2493)
     print(list(graph.nodes))
     print(graph.edges)
     print(type(graph.edges))
