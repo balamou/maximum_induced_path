@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import random
 
-def heuristic_induced_path(graph, initial_node = 0):
+def heuristic_induced_path(graph):
+    initial_node = pick_random_node(graph)
     visited = {initial_node}
     result = []
     current_node = initial_node
@@ -13,13 +14,24 @@ def heuristic_induced_path(graph, initial_node = 0):
 
         result.append(current_node)
 
-        current_node = pick_random_node(adjacent_nodes, visited)
+        current_node = pick_random_not_visited_node(adjacent_nodes, visited)
         visited.update(adjacent_nodes)
 
     return result
 
+def pick_random_node(graph):
+    """
+    Pick a random node from the graph and return it.
+    """
+    nodes = list(graph.nodes)
+    rand_index = pick_random_index(nodes)
+    
+    return nodes[rand_index]
 
-def pick_random_node(array, visited):
+def pick_random_not_visited_node(array, visited):
+    """
+    Picks a random non-visited node, if no such node can be found it returns None.
+    """
     index = pick_random_index(array)
 
     while len(array) > 0 and array[index] in visited:
@@ -42,8 +54,7 @@ def draw(edges, induced_path = []):
     G = nx.DiGraph()
     G.add_edges_from(edges)
 
-    # Need to create a layout when doing
-    pos = nx.planar_layout(G)
+    pos = nx.planar_layout(G) # Layout of the position of nodes
     nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 500)
     nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 500, node_color="red")
     nx.draw_networkx_labels(G, pos)
