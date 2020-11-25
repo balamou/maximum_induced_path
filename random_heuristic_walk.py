@@ -4,7 +4,7 @@ import networkx as nx
 import random
 
 
-def several_rounds_induced(graph, iterations = 20): 
+def find_maximum_induced_path(graph, iterations = 20): 
     """
     Keeps finding induced paths randomly and returns the one with the max length
     """
@@ -90,21 +90,20 @@ def convert_induced_nodes_to_edges(induced_nodes):
     return result
 
 
+def generate_random_graph():
+    total_nodes = 20  # total nodes created
+    p = 0.10 # probability of edge creation
+    seed = 3245 # seed
+    return erdos_renyi_graph(total_nodes, p, seed)
+
 def main():
-    total_nodes = 12 # total nodes created
-    p = 0.2 # probability of edge creation
-    graph = erdos_renyi_graph(total_nodes, p, 3245)
-    print(list(graph.nodes))
-    print(graph.edges)
-    print(type(graph.edges))
+    graph = generate_random_graph()
 
-    print(list(graph.adj[1]))
-
-    heuristic = several_rounds_induced(graph)
-    print("Heuristic solution:")
-    print(f'Len: {len(heuristic)}, {heuristic}')
-    edges = convert_induced_nodes_to_edges(heuristic)
-    print(f'{edges}')
-    draw(graph.edges, heuristic, edges)
+    maximum_induced_path = find_maximum_induced_path(graph, 50)
+    print("Heuristic solution")
+    print(f'Maximum induced path: {maximum_induced_path}')
+    print(f'With length: {len(maximum_induced_path)}')
+    edges = convert_induced_nodes_to_edges(maximum_induced_path)
+    draw(graph.edges, maximum_induced_path, edges)
 
 main()
