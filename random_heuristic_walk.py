@@ -9,12 +9,16 @@ def find_maximum_induced_path(graph, iterations = 20):
     Keeps finding induced paths randomly and returns the one with the max length
     """
     max_induced_path = []
+    iteration_found = 0
     
-    for _ in range(iterations):
+    for i in range(iterations):
         found_induced_path = heuristic_induced_path(graph)
-        print(f'Len: {len(found_induced_path)}, path: {found_induced_path}')
+        print(f'Iteration: {i}, Len: {len(found_induced_path)}, path: {found_induced_path}')
         if len(found_induced_path) > len(max_induced_path):
             max_induced_path = found_induced_path
+            iteration_found = i
+        
+    print(f'Result found after iteration {iteration_found} out of {iterations}')
 
     return max_induced_path
 
@@ -91,8 +95,8 @@ def convert_induced_nodes_to_edges(induced_nodes):
 
 
 def generate_random_graph():
-    total_nodes = 20  # total nodes created
-    p = 0.10 # probability of edge creation
+    total_nodes = 12  # total nodes created
+    p = 0.14 # probability of edge creation
     seed = 3245 # seed
     return erdos_renyi_graph(total_nodes, p, seed)
 
@@ -100,7 +104,9 @@ def main():
     graph = generate_random_graph()
 
     maximum_induced_path = find_maximum_induced_path(graph, 50)
-    print("Heuristic solution")
+
+    print()
+    print('Heuristic solution')
     print(f'Maximum induced path: {maximum_induced_path}')
     print(f'With length: {len(maximum_induced_path)}')
     edges = convert_induced_nodes_to_edges(maximum_induced_path)
