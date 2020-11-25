@@ -33,6 +33,7 @@ def heuristic_induced_path(graph):
         adjacent_nodes = list(graph.adj[current_node])
 
         result.append(current_node)
+        draw_step(graph.edges, result, convert_induced_nodes_to_edges(result))
 
         current_node = pick_random_not_visited_node(adjacent_nodes, visited)
         visited.update(adjacent_nodes)
@@ -98,11 +99,27 @@ def draw_large_graph(edges, induced_path = [], highlight_edges = []):
     nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 1)
     plt.show()
 
+def draw_step(edges, induced_path = [], highlight_edges = []):
+    G = nx.DiGraph()
+    G.add_edges_from(edges)
+
+    plt.figure(figsize=(8, 6))
+    pos = nx.random_layout(G, seed=99)  # Layout of the position of nodes
+    
+    # Transparent
+    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 50, alpha=0.3, node_color="black")
+    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges), alpha=0.2, arrows=False,edge_color="black")
+
+    # RED
+    nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 50, node_color="red")
+    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 1)
+    plt.show()
+
 def convert_induced_nodes_to_edges(induced_nodes):
     result = []
 
     if len(induced_nodes) < 2:
-        return induced_nodes
+        return []
 
     for i in range(len(induced_nodes) - 1):
         result.append((induced_nodes[i], induced_nodes[i + 1]))
@@ -111,9 +128,9 @@ def convert_induced_nodes_to_edges(induced_nodes):
 
 
 def generate_random_graph():
-    total_nodes = 50  # total nodes created
-    p = 0.10 # probability of edge creation
-    seed = 6940 # seed
+    total_nodes = 20  # total nodes created
+    p = 0.15 # probability of edge creation
+    seed = 200 # seed
     return erdos_renyi_graph(total_nodes, p, seed)
 
 def main():
