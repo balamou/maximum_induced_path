@@ -18,7 +18,7 @@ def find_maximum_induced_path(graph, iterations = 20):
             max_induced_path = found_induced_path
             iteration_found = i
         
-    print(f'Result found after iteration {iteration_found} out of {iterations}')
+    print(f'Result found after iteration {iteration_found + 1} out of {iterations}')
 
     return max_induced_path
 
@@ -82,6 +82,18 @@ def draw(edges, induced_path = [], highlight_edges = []):
     nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 2)
     plt.show()
 
+def draw_large_graph(edges, induced_path = [], highlight_edges = []):
+    G = nx.DiGraph()
+    G.add_edges_from(edges)
+
+    pos = nx.random_layout(G) # Layout of the position of nodes
+    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 50, node_color="black")
+    nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 100, node_color="red")
+    # nx.draw_networkx_labels(G, pos)
+    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges), arrows=False,edge_color="gray")
+    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 2)
+    plt.show()
+
 def convert_induced_nodes_to_edges(induced_nodes):
     result = []
 
@@ -95,21 +107,21 @@ def convert_induced_nodes_to_edges(induced_nodes):
 
 
 def generate_random_graph():
-    total_nodes = 12  # total nodes created
-    p = 0.14 # probability of edge creation
-    seed = 3245 # seed
+    total_nodes = 50  # total nodes created
+    p = 0.10 # probability of edge creation
+    seed = 6940 # seed
     return erdos_renyi_graph(total_nodes, p, seed)
 
 def main():
     graph = generate_random_graph()
 
-    maximum_induced_path = find_maximum_induced_path(graph, 50)
+    maximum_induced_path = find_maximum_induced_path(graph, 100)
 
     print()
     print('Heuristic solution')
     print(f'Maximum induced path: {maximum_induced_path}')
     print(f'With length: {len(maximum_induced_path)}')
     edges = convert_induced_nodes_to_edges(maximum_induced_path)
-    draw(graph.edges, maximum_induced_path, edges)
+    draw_large_graph(graph.edges, maximum_induced_path, edges)
 
 main()
