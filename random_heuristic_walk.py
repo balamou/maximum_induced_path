@@ -86,12 +86,16 @@ def draw_large_graph(edges, induced_path = [], highlight_edges = []):
     G = nx.DiGraph()
     G.add_edges_from(edges)
 
+    plt.figure(figsize=(8, 6))
     pos = nx.random_layout(G) # Layout of the position of nodes
-    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 50, node_color="black")
-    nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 100, node_color="red")
-    # nx.draw_networkx_labels(G, pos)
-    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges), arrows=False,edge_color="gray")
-    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 2)
+    
+    # Transparent
+    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 50, alpha=0.3, node_color="black")
+    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges), alpha=0.2, arrows=False,edge_color="black")
+
+    # RED
+    nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 50, node_color="red")
+    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 1)
     plt.show()
 
 def convert_induced_nodes_to_edges(induced_nodes):
