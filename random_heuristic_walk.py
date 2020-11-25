@@ -66,7 +66,7 @@ def pick_random_index(array):
     index = random.randint(0, len(array) - 1)
     return index
 
-def draw(edges, induced_path = []):
+def draw(edges, induced_path = [], highlight_edges = []):
     G = nx.DiGraph()
     G.add_edges_from(edges)
 
@@ -74,8 +74,21 @@ def draw(edges, induced_path = []):
     nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 500)
     nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 500, node_color="red")
     nx.draw_networkx_labels(G, pos)
-    nx.draw_networkx_edges(G, pos, arrows=False)
+    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges), arrows=False)
+    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 2)
     plt.show()
+
+def convert_induced_nodes_to_edges(induced_nodes):
+    result = []
+
+    if len(induced_nodes) < 2:
+        return induced_nodes
+
+    for i in range(len(induced_nodes) - 1):
+        result.append((induced_nodes[i], induced_nodes[i + 1]))
+
+    return result
+
 
 def main():
     total_nodes = 12 # total nodes created
@@ -90,6 +103,8 @@ def main():
     heuristic = several_rounds_induced(graph)
     print("Heuristic solution:")
     print(f'Len: {len(heuristic)}, {heuristic}')
-    draw(graph.edges, heuristic)
+    edges = convert_induced_nodes_to_edges(heuristic)
+    print(f'{edges}')
+    draw(graph.edges, heuristic, edges)
 
 main()
