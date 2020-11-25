@@ -33,7 +33,7 @@ def heuristic_induced_path(graph):
         adjacent_nodes = list(graph.adj[current_node])
 
         result.append(current_node)
-        draw_step(graph.edges, result, convert_induced_nodes_to_edges(result))
+        draw_step(graph.edges, result, convert_induced_nodes_to_edges(result), visited)
 
         current_node = pick_random_not_visited_node(adjacent_nodes, visited)
         visited.update(adjacent_nodes)
@@ -99,20 +99,26 @@ def draw_large_graph(edges, induced_path = [], highlight_edges = []):
     nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 1)
     plt.show()
 
-def draw_step(edges, induced_path = [], highlight_edges = []):
+def draw_step(edges, induced_path = [], highlight_edges = [], visited_nodes = []):
     G = nx.DiGraph()
     G.add_edges_from(edges)
 
     plt.figure(figsize=(8, 6))
-    pos = nx.random_layout(G, seed=99)  # Layout of the position of nodes
+    pos = nx.circular_layout(G)  # Layout of the position of nodes
+    node_size = 100
+    width = 2.5
     
     # Transparent
-    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 50, alpha=0.3, node_color="black")
-    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges), alpha=0.2, arrows=False,edge_color="black")
+    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = node_size, alpha=0.7, node_color="black")
+    nx.draw_networkx_edges(G, pos, edgelist=set(edges) - set(highlight_edges) - set(visited_nodes), alpha=0.6, arrows=False,edge_color="black", width = width)
 
     # RED
-    nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = 50, node_color="red")
-    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = 1)
+    nx.draw_networkx_nodes(G, pos, nodelist=induced_path, cmap=plt.get_cmap('jet'), node_size = node_size, node_color="red")
+    nx.draw_networkx_edges(G, pos, edgelist=highlight_edges, edge_color="red", width = width)
+
+    # BLUE
+    nx.draw_networkx_nodes(G, pos, nodelist=set(visited_nodes) - set(induced_path), cmap=plt.get_cmap('jet'), node_size = node_size, node_color="blue")
+
     plt.show()
 
 def convert_induced_nodes_to_edges(induced_nodes):
@@ -128,9 +134,9 @@ def convert_induced_nodes_to_edges(induced_nodes):
 
 
 def generate_random_graph():
-    total_nodes = 20  # total nodes created
-    p = 0.15 # probability of edge creation
-    seed = 200 # seed
+    total_nodes = 15  # total nodes created
+    p = 0.20 # probability of edge creation
+    seed = 894 # seed
     return erdos_renyi_graph(total_nodes, p, seed)
 
 def main():
